@@ -151,13 +151,34 @@ export function CartPopover({ children }: CartPopoverProps) {
                   </Button>
                 </div>
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigateTo("/account");
+                    }}
+                  >
                     내 계정 관리
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigateTo("/account/payment-shipping");
+                    }}
+                  >
                     결제 및 배송
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => {
+                      setIsOpen(false);
+                      navigateTo("/account/apple-id");
+                    }}
+                  >
                     Apple ID 설정
                   </Button>
                 </div>

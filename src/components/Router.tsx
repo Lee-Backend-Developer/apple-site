@@ -19,6 +19,9 @@ import { Orders } from "../pages/Orders";
 import { OrderDetail } from "../pages/OrderDetail";
 import { TrackingOrder } from "../pages/TrackingOrder";
 import { ProductDetail } from "../pages/ProductDetail";
+import { AccountManagement } from "../pages/AccountManagement";
+import { PaymentShipping } from "../pages/PaymentShipping";
+import { AppleIdSettings } from "../pages/AppleIdSettings";
 
 // Home component for the main page
 import { Hero } from "./Hero";
@@ -86,6 +89,11 @@ const routes: Route[] = [
   { path: "/accessories", component: <Accessories /> },
   { path: "/apple-exclusive", component: <Exclusive /> },
   { path: "/support", component: <Support /> },
+  
+  // Account Management
+  { path: "/account", component: <AccountManagement /> },
+  { path: "/account/payment-shipping", component: <PaymentShipping /> },
+  { path: "/account/apple-id", component: <AppleIdSettings /> },
   
   // Apple Wallet
   { path: "/wallet", component: <PlaceholderPage title="월렛" description="iPhone에서 카드, 티켓, 패스를 안전하게 보관하세요." /> },
