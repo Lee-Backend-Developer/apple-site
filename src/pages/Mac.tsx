@@ -2,6 +2,7 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { useCart } from "../components/CartContext";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner@2.0.3";
+import { navigateTo } from "../components/Router";
 
 export function Mac() {
   const { addToCart } = useCart();
@@ -142,6 +143,7 @@ export function Mac() {
                     장바구니에 추가
                   </Button>
                   <Button
+                    onClick={() => navigateTo(`/product/${product.id}`)}
                     variant="outline"
                     className="border border-[#0071e3] text-[#0071e3] hover:bg-[#0071e3] hover:text-white px-6 py-3 rounded-full"
                   >

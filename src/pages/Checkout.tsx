@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../components/CartContext";
+import { useAuth } from "../components/AuthContext";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -29,6 +30,7 @@ interface PaymentInfo {
 
 export function Checkout() {
   const { items, getTotalPrice, clearCart } = useCart();
+  const { addOrder } = useAuth();
   const [step, setStep] = useState<'shipping' | 'payment' | 'review' | 'complete'>('shipping');
   const [isProcessing, setIsProcessing] = useState(false);
   
@@ -51,9 +53,24 @@ export function Checkout() {
   });
 
   // If cart is empty, redirect to cart
+  useEffect(() => {
+    if (items.length === 0) {
+      navigateTo('/cart');
+    }
+  }, [items.length]);
+
+  // Show loading or nothing while redirecting for empty cart
   if (items.length === 0) {
-    navigateTo('/cart');
-    return null;
+    return (
+      <div className="min-h-screen bg-[#f5f5f7] py-20">
+        <div className="max-w-[600px] mx-auto px-6 text-center">
+          <div className="bg-white rounded-3xl p-12">
+            <div className="text-6xl mb-8">🛒</div>
+            <p className="text-xl text-gray-600">장바구니로 이동 중...</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const handleShippingSubmit = (e: React.FormEvent) => {
@@ -70,6 +87,17 @@ export function Checkout() {
     setIsProcessing(true);
     // Simulate payment processing
     await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Add order to history
+    const newOrder = {
+      id: `ORD-${Date.now().toString().slice(-8)}`,
+      date: new Date().toISOString().split('T')[0],
+      items: items.map(item => ({...item})),
+      total: Math.round(getTotalPrice() * 1.1), // Include tax
+      status: "주문완료"
+    };
+    addOrder(newOrder);
+    
     setIsProcessing(false);
     setStep('complete');
     clearCart();

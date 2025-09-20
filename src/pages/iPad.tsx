@@ -1,36 +1,70 @@
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { useCart } from "../components/CartContext";
+import { Button } from "../components/ui/button";
+import { toast } from "sonner@2.0.3";
+import { navigateTo } from "../components/Router";
 
 export function IPadPage() {
+  const { addToCart } = useCart();
+  
   const iPadProducts = [
     {
+      id: "ipad-pro-11",
       name: "iPad Pro",
       description: "궁극의 iPad 경험. M2 칩의 막강한 성능.",
-      price: "₩1,249,000부터",
+      price: 1249000,
+      priceText: "₩1,249,000부터",
       sizes: ["11인치", "12.9인치"],
+      category: "태블릿",
       image: "https://images.unsplash.com/photo-1629131704989-c74179b0ce16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpcGFkJTIwdGFibGV0JTIwbW9kZXJufGVufDF8fHx8MTc1ODI4NTYzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      specifications: ["M2 칩", "11인치 또는 12.9인치", "Liquid Retina XDR 디스플레이", "Apple Pencil (2세대) 지원"]
     },
     {
+      id: "ipad-air",
       name: "iPad Air",
       description: "색다른 능력. 색다른 재미. 색다른 컬러.",
-      price: "₩899,000부터",
+      price: 899000,
+      priceText: "₩899,000부터",
       sizes: ["10.9인치"],
+      category: "태블릿",
       image: "https://images.unsplash.com/photo-1629131704989-c74179b0ce16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpcGFkJTIwdGFibGV0JTIwbW9kZXJufGVufDF8fHx8MTc1ODI4NTYzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      specifications: ["M1 칩", "10.9인치 Liquid Retina 디스플레이", "5가지 컬러", "Apple Pencil (2세대) 지원"]
     },
     {
+      id: "ipad-10th",
       name: "iPad",
       description: "만족스러운 성능. 만족스러운 가격.",
-      price: "₩679,000부터",
+      price: 679000,
+      priceText: "₩679,000부터",
       sizes: ["10.9인치"],
+      category: "태블릿",
       image: "https://images.unsplash.com/photo-1629131704989-c74179b0ce16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpcGFkJTIwdGFibGV0JTIwbW9kZXJufGVufDF8fHx8MTc1ODI4NTYzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      specifications: ["A14 Bionic 칩", "10.9인치 Liquid Retina 디스플레이", "4가지 컬러", "Apple Pencil (1세대) 지원"]
     },
     {
+      id: "ipad-mini",
       name: "iPad mini",
       description: "메가급 성능. 미니 사이즈.",
-      price: "₩749,000부터",
+      price: 749000,
+      priceText: "₩749,000부터",
       sizes: ["8.3인치"],
+      category: "태블릿",
       image: "https://images.unsplash.com/photo-1629131704989-c74179b0ce16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpcGFkJTIwdGFibGV0JTIwbW9kZXJufGVufDF8fHx8MTc1ODI4NTYzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+      specifications: ["A15 Bionic 칩", "8.3인치 Liquid Retina 디스플레이", "4가지 컬러", "Apple Pencil (2세대) 지원"]
     },
   ];
+
+  const handleAddToCart = (product: typeof iPadProducts[0]) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: product.category,
+      specifications: product.specifications
+    });
+    toast.success(`${product.name}이(가) 장바구니에 추가되었습니다.`);
+  };
 
   return (
     <div>
@@ -63,8 +97,8 @@ export function IPadPage() {
         <div className="max-w-[1024px] mx-auto px-6">
           <h2 className="text-4xl text-center mb-16">나에게 맞는 iPad 찾기</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {iPadProducts.map((product, index) => (
-              <div key={index} className="bg-white rounded-3xl p-8 text-center hover:shadow-lg transition-shadow">
+            {iPadProducts.map((product) => (
+              <div key={product.id} className="bg-white rounded-3xl p-8 text-center hover:shadow-lg transition-shadow">
                 <div className="mb-8">
                   <ImageWithFallback
                     src={product.image}
@@ -74,7 +108,7 @@ export function IPadPage() {
                 </div>
                 <h3 className="text-2xl mb-4">{product.name}</h3>
                 <p className="text-gray-600 mb-4">{product.description}</p>
-                <p className="text-lg mb-4">{product.price}</p>
+                <p className="text-lg mb-4">{product.priceText}</p>
                 
                 {/* Size Options */}
                 <div className="mb-6">
@@ -92,18 +126,19 @@ export function IPadPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
-                    href="#"
-                    className="inline-flex items-center justify-center px-6 py-3 bg-[#0071e3] text-white rounded-full hover:bg-[#0077ed] transition-colors"
+                  <Button
+                    onClick={() => handleAddToCart(product)}
+                    className="bg-[#0071e3] hover:bg-[#0077ed] text-white px-6 py-3 rounded-full"
                   >
-                    구입하기
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center justify-center px-6 py-3 border border-[#0071e3] text-[#0071e3] rounded-full hover:bg-[#0071e3] hover:text-white transition-colors"
+                    장바구니에 추가
+                  </Button>
+                  <Button
+                    onClick={() => navigateTo(`/product/${product.id}`)}
+                    variant="outline"
+                    className="border border-[#0071e3] text-[#0071e3] hover:bg-[#0071e3] hover:text-white px-6 py-3 rounded-full"
                   >
                     더 알아보기
-                  </a>
+                  </Button>
                 </div>
               </div>
             ))}

@@ -28,6 +28,7 @@ export function Footer() {
     {
       title: "계정",
       links: [
+        { name: "Apple ID 만들기", path: "/signup" },
         { name: "Apple ID 관리", path: "#" },
         { name: "Apple Store 계정", path: "#" },
         { name: "iCloud.com", path: "#" },
@@ -59,6 +60,7 @@ export function Footer() {
         { name: "Apple Trade In", path: "#" },
         { name: "할부", path: "#" },
         { name: "캐리어 혜택", path: "#" },
+        { name: "주문 내역", path: "/orders" },
         { name: "주문 상태", path: "#" },
         { name: "구입 도움말", path: "#" },
       ],

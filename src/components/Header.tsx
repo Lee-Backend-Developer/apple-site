@@ -1,6 +1,7 @@
 import { Search, ShoppingBag } from "lucide-react";
 import { navigateTo } from "./Router";
 import { useCart } from "./CartContext";
+import { CartPopover } from "./CartPopover";
 
 export function Header() {
   const { getTotalItems } = useCart();
@@ -82,18 +83,20 @@ export function Header() {
 
           {/* Right Side Icons */}
           <div className="flex items-center space-x-4">
-            <Search className="w-4 h-4 text-[#f5f5f7] hover:text-white cursor-pointer transition-colors" />
-            <div className="relative">
-              <ShoppingBag 
-                className="w-4 h-4 text-[#f5f5f7] hover:text-white cursor-pointer transition-colors" 
-                onClick={() => handleNavigation("/cart")}
-              />
-              {totalItems > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#0071e3] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                  {totalItems > 99 ? '99+' : totalItems}
-                </span>
-              )}
-            </div>
+            <Search 
+              className="w-4 h-4 text-[#f5f5f7] hover:text-white cursor-pointer transition-colors" 
+              onClick={() => handleNavigation("/search")}
+            />
+            <CartPopover>
+              <div className="relative cursor-pointer">
+                <ShoppingBag className="w-4 h-4 text-[#f5f5f7] hover:text-white transition-colors" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-[#0071e3] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </span>
+                )}
+              </div>
+            </CartPopover>
           </div>
         </nav>
       </div>

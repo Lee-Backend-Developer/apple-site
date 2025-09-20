@@ -9,6 +9,16 @@ import { AirPods } from "../pages/AirPods";
 import { Store } from "../pages/Store";
 import { Cart } from "../pages/Cart";
 import { Checkout } from "../pages/Checkout";
+import { TVHome } from "../pages/TVHome";
+import { Exclusive } from "../pages/Exclusive";
+import { Accessories } from "../pages/Accessories";
+import { Support } from "../pages/Support";
+import { Search } from "../pages/Search";
+import { Signup } from "../pages/Signup";
+import { Orders } from "../pages/Orders";
+import { OrderDetail } from "../pages/OrderDetail";
+import { TrackingOrder } from "../pages/TrackingOrder";
+import { ProductDetail } from "../pages/ProductDetail";
 
 // Home component for the main page
 import { Hero } from "./Hero";
@@ -20,9 +30,11 @@ function Home() {
     <>
       <Hero />
       <ProductShowcase
+        id="macbook-pro-m3"
         subtitle="새로운 맥북 프로"
         title="MacBook Pro"
         description="M3, M3 Pro, M3 Max가 제공하는 막강한 성능. 최대 22시간의 배터리 사용 시간."
+        price={2390000}
         imageUrl="https://images.unsplash.com/photo-1705617551935-63c5fc09ba72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWNib29rJTIwbGFwdG9wJTIwd29ya3NwYWNlfGVufDF8fHx8MTc1ODI4NTYyN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
         imageAlt="MacBook Pro"
         backgroundColor="bg-white"
@@ -62,15 +74,18 @@ const routes: Route[] = [
   { path: "/store", component: <Store /> },
   { path: "/cart", component: <Cart /> },
   { path: "/checkout", component: <Checkout /> },
+  { path: "/search", component: <Search /> },
+  { path: "/signup", component: <Signup /> },
+  { path: "/orders", component: <Orders /> },
   { path: "/mac", component: <Mac /> },
   { path: "/ipad", component: <IPadPage /> },
   { path: "/iphone", component: <IPhonePage /> },
   { path: "/watch", component: <Watch /> },
   { path: "/airpods", component: <AirPods /> },
-  { path: "/tv-and-home", component: <PlaceholderPage title="TV 및 홈" description="Apple TV, HomePod 등 홈 엔터테인먼트 제품들을 만나보세요." /> },
-  { path: "/accessories", component: <PlaceholderPage title="액세서리" description="Apple 제품을 더욱 특별하게 만들어주는 액세서리들을 살펴보세요." /> },
-  { path: "/apple-exclusive", component: <PlaceholderPage title="Apple 독점 제공" description="Apple에서만 만날 수 있는 특별한 제품과 서비스들입니다." /> },
-  { path: "/support", component: <PlaceholderPage title="고객지원" description="Apple 제품 사용에 도움이 필요하시면 언제든 문의하세요." /> },
+  { path: "/tv-and-home", component: <TVHome /> },
+  { path: "/accessories", component: <Accessories /> },
+  { path: "/apple-exclusive", component: <Exclusive /> },
+  { path: "/support", component: <Support /> },
   
   // Apple Wallet
   { path: "/wallet", component: <PlaceholderPage title="월렛" description="iPhone에서 카드, 티켓, 패스를 안전하게 보관하세요." /> },
@@ -95,21 +110,60 @@ export function Router() {
 
   useEffect(() => {
     const handlePathChange = () => {
-      setCurrentPath(window.location.pathname);
+      const newPath = window.location.pathname;
+      setCurrentPath(newPath);
     };
 
+    // Custom event listener for navigation
     window.addEventListener("popstate", handlePathChange);
-    return () => window.removeEventListener("popstate", handlePathChange);
+    
+    // Add custom navigation event
+    window.addEventListener("navigate", handlePathChange as any);
+    
+    return () => {
+      window.removeEventListener("popstate", handlePathChange);
+      window.removeEventListener("navigate", handlePathChange as any);
+    };
   }, []);
 
-  // Find matching route
-  const currentRoute = routes.find(route => route.path === currentPath) || routes[0];
+  // Find matching route - handle dynamic routes
+  let currentRoute = routes.find(route => route.path === currentPath);
+  
+  // Handle dynamic routes
+  if (!currentRoute) {
+    if (currentPath.startsWith('/product/')) {
+      const productId = currentPath.split('/')[2];
+      return <div key={currentPath}><ProductDetail productId={productId} /></div>;
+    } else if (currentPath.startsWith('/order/')) {
+      const orderId = currentPath.split('/')[2];
+      return <div key={currentPath}><OrderDetail orderId={orderId} /></div>;
+    } else if (currentPath.startsWith('/tracking/')) {
+      const orderId = currentPath.split('/')[2];
+      return <div key={currentPath}><TrackingOrder orderId={orderId} /></div>;
+    }
+  }
+  
+  // Default to home if no route found
+  currentRoute = currentRoute || routes[0];
 
-  return <>{currentRoute.component}</>;
+  // Force re-render by returning a keyed component
+  return <div key={currentPath}>{currentRoute.component}</div>;
 }
 
 // Navigation helper function
 export function navigateTo(path: string) {
+  // Update URL
   window.history.pushState({}, "", path);
+  
+  // Dispatch both events to ensure navigation works
   window.dispatchEvent(new PopStateEvent("popstate"));
+  window.dispatchEvent(new CustomEvent("navigate"));
+  
+  // Force immediate update by scrolling to top
+  window.scrollTo(0, 0);
+  
+  // Force a small delay to ensure state updates
+  setTimeout(() => {
+    window.dispatchEvent(new CustomEvent("navigate"));
+  }, 10);
 }
